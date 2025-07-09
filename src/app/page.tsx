@@ -1,54 +1,31 @@
-'use client'
-import { useState } from "react";
-
+// TypeScript 段階的練習問題 - To-doリストで学ぶ基礎
+// JavaScriptレベルと同じ難易度で、TypeScriptを段階的に学びましょう。
+// 実務で頻出するTypeScriptの型を、To-doリスト作成を通じて習得します。
 
 // ==============================================
-// 問題3: TodoリストAdd機能
+// 問題1: 基本の型定義 - 変数に型をつける
 // ==============================================
-// 入力フィールドとボタンで、Todoを追加できる機能を作成してください。
-// 入力後、リストに追加され、入力フィールドがクリアされる
+// 🎯 使うTypeScript: string, number, boolean
+// ヒント: 変数名: 型名 = 値;
 
-const TodoAdd = () => {
-  // ここにコードを書いてください
-  const [userInput, setUserInput] = useState("");
-  const [todos, setTodos] = useState([]);
+"use client"
 
-  const handleAdd = () => {  
-    setTodos([...todos, {
-      id: Date.now(),
-      input: userInput, 
-    }]);
-    setUserInput("");
-  }
+function createBasicVariables() {
+  // ここに型付きの変数を作成してください
+  // todoText (文字列型)
+  // todoId (数値型)  
+  // isCompleted (真偽値型)
+  
+  const todoText: string = "to do textでーす"
+  const todoId: number = 710;
+  const isCompleted: boolean = true;
 
-  return(
-    <div>
-      <div>
-        <input
-         type="text"
-         value={userInput}
-         onChange={(e)=>setUserInput(e.target.value)} 
-         placeholder="please write to do here"
-        />
-      </div>
-      <div>
-        <button
-          onClick={handleAdd}
-          className="bg-green-400 px-4 py-2"
-        >
-          add
-        </button>
-      </div>
-      <ul>
-        your to do 
-        {todos.map((todo)=>(
-          <li key={todo.id}>
-            {todo.input}
-          </li>
-))}
-      </ul>
-    </div>
-  );
-};
+  console.log("todoText:", todoText);
+  console.log("todoId:", todoId);
+  console.log("isCompleted:", isCompleted);
+}
 
-export default TodoAdd;
+// テスト
+createBasicVariables();
+
+export default createBasicVariables;
