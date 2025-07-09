@@ -10,22 +10,29 @@
 
 "use client"
 
-function createBasicVariables() {
-  // ここに型付きの変数を作成してください
-  // todoText (文字列型)
-  // todoId (数値型)  
-  // isCompleted (真偽値型)
-  
-  const todoText: string = "to do textでーす"
-  const todoId: number = 710;
-  const isCompleted: boolean = true;
+// ==============================================
+// 問題3: オブジェクトの型定義 - To-do1個の形
+// ==============================================
+// 🎯 使うTypeScript: {プロパティ: 型, プロパティ: 型}
+// ヒント: {id: number, text: string, completed: boolean}
 
-  console.log("todoText:", todoText);
-  console.log("todoId:", todoId);
-  console.log("isCompleted:", isCompleted);
+function createSingleTodo() {
+  // ここにオブジェクトの型定義を書いてください
+  // todo という名前で、id, text, completedを持つオブジェクト
+  const todo: { id: number; text: string; completed: boolean} = {
+    id: 1,
+    text: "Ts 復習中でーす",
+    completed: false
+  } 
+  
+  
+  console.log("Single Todo:", todo);
+  return todo;
 }
 
 // テスト
-createBasicVariables();
+createSingleTodo();
 
-export default createBasicVariables;
+
+
+export default createSingleTodo;
