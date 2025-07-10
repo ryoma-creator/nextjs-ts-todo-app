@@ -1,29 +1,56 @@
+// React Todo CRUD段階的練習問題 - CREATE から始める
+// TypeScriptなしで、サクッと自信をつけるための練習問題です。
+// CRUD順序：Create → Read → Update → Delete で学びましょう。
+
 // ==============================================
-// 問題5: 関数の引数と戻り値に型定義
+// 問題1: CREATE - Todo追加機能
 // ==============================================
-// 🎯 使うTypeScript: (引数: 型) => 戻り値型
-// ヒント: function 関数名(引数: 型): 戻り値型 { }
+// 入力フィールドとボタンでTodoを追加する機能を作成してください
 
 'use client'
+import { useState } from 'react';
 
-// まずTodo interfaceが必要です
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
+const TodoCreate = () => {
+  const [todos, setTodos] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [state, setState] = useState("");
 
-// ここに型付きの関数を書いてください
-// addTodo関数: 文字列を受け取って、Todo型を返す
-  const addTodo=(text: string):Todo=>{
-    return {
+  const addTodo = () => {
+    // ここに追加機能を書いてください
+    // 新しいオブジェクトを作成して配列に追加
+    const newTodo = {
       id: Date.now(),
-      text: text,
-      completed: false
-    };
+      text: state,
+      completed: false,
+    }
+    setTodos([...todos, newTodo]);
+    setInputText(""); 
   };
 
-// テスト
-console.log("Added Todo:", addTodo("TypeScript勉強する"));
+  return (
+    <div>
+      <h2>Todo追加機能</h2>
+      {/* ここに入力フィールドと追加ボタンを書いてください */}
+      <div>
+        <input
+         type="text"
+         value={state}
+         onChange={(e)=>setState(e.target.value)}
+         />
+        <button
+          onClick={addTodo}
+        >
+          add button
+        </button>
+      </div>
+      
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>{todo.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default addTodo;
+export default TodoCreate;
