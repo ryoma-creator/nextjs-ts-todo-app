@@ -1,56 +1,45 @@
-// React Todo CRUD段階的練習問題 - CREATE から始める
-// TypeScriptなしで、サクッと自信をつけるための練習問題です。
-// CRUD順序：Create → Read → Update → Delete で学びましょう。
-
 // ==============================================
-// 問題1: CREATE - Todo追加機能
+// 問題3: UPDATE - 完了/未完了の切り替え
 // ==============================================
-// 入力フィールドとボタンでTodoを追加する機能を作成してください
+// toggleTodo関数だけを完成させてください
 
 'use client'
 import { useState } from 'react';
 
-const TodoCreate = () => {
-  const [todos, setTodos] = useState([]);
-  const [inputText, setInputText] = useState("");
-  const [state, setState] = useState("");
+const TodoToggle = () => {
+  const [todos, setTodos] = useState([
+    { id: 1, text: "React勉強", completed: false },
+    { id: 2, text: "買い物", completed: true },
+    { id: 3, text: "掃除", completed: false }
+  ]);
 
-  const addTodo = () => {
-    // ここに追加機能を書いてください
-    // 新しいオブジェクトを作成して配列に追加
-    const newTodo = {
-      id: Date.now(),
-      text: state,
-      completed: false,
-    }
-    setTodos([...todos, newTodo]);
-    setInputText(""); 
+  const toggleTodo = (id) => {
+    // ここに切り替え機能を書いてください
+    // ヒント: map使って、idが一致するもののcompletedを!で反転
+    setTodos(todos.map(todo => 
+      todo.id === id ? {...todo, completed: !todo.completed} : todo 
+    ));
   };
 
   return (
     <div>
-      <h2>Todo追加機能</h2>
-      {/* ここに入力フィールドと追加ボタンを書いてください */}
-      <div>
-        <input
-         type="text"
-         value={state}
-         onChange={(e)=>setState(e.target.value)}
-         />
-        <button
-          onClick={addTodo}
-        >
-          add button
-        </button>
-      </div>
-      
+      <h2>Todo完了切り替え</h2>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.text}</li>
+          <li key={todo.id}>
+            <input 
+              type="checkbox" 
+              checked={todo.completed}
+              onChange={() => toggleTodo(todo.id)}
+            />
+            <span style={{textDecoration: todo.completed ? 'line-through' : 'none'}}>
+              {todo.text}
+            </span>
+          </li>
         ))}
       </ul>
     </div>
   );
 };
 
-export default TodoCreate;
+export default TodoToggle;
