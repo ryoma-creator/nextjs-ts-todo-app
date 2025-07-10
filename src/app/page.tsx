@@ -1,50 +1,34 @@
+// React Props段階的復習問題 - サクッとマスター
+// TypeScript問題5に進む前に、Propsの基本を思い出しましょう
+// 各問題2-3分で完了、合計10分でProps完全復習！
+
 // ==============================================
-// 問題3: UPDATE + TypeScript型定義
+// 問題1: 文字列Props - 超基本
 // ==============================================
-// 関数の引数に型定義を追加してください
+// 名前を表示するコンポーネントにPropsで名前を渡してください
 
 'use client'
 import { useState } from 'react';
 
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
-
-const TodoToggleTS = () => {
-  const [todos, setTodos] = useState<Todo[]>([
-    { id: 1, text: "React勉強", completed: false },
-    { id: 2, text: "買い物", completed: true },
-    { id: 3, text: "掃除", completed: false }
-  ]);
-
-  // ここに引数の型定義を追加してください
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? {...todo, completed: !todo.completed} : todo
-    ));
-  };
-
+// 子コンポーネント（名前を受け取って表示）
+const NameDisplay = (props:{name: string}): React.ReactNode=> {
   return (
     <div>
-      <h2>UPDATE + TypeScript</h2>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <input 
-              type="checkbox" 
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-            />
-            <span style={{textDecoration: todo.completed ? 'line-through' : 'none'}}>
-              {todo.text}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {/* ここにprops.nameを表示してください */}
+      {props.name}
     </div>
   );
 };
 
-export default TodoToggleTS;
+// 親コンポーネント
+const PropsTest1 = () => {
+  return (
+    <div>
+      <h2>Props問題1: 文字列渡し</h2>
+      {/* ここにNameDisplayコンポーネントを使って、name="太郎"を渡してください */}
+      <NameDisplay name="cross"/>
+    </div>
+  );
+};
+
+export default PropsTest1;
