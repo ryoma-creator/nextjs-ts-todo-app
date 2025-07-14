@@ -1,65 +1,61 @@
 'use client'
 
 // ==============================================
-// 問題3: useStateとテーブルの組み合わせ
+// 問題4: API構造確認練習
 // ==============================================
-// useStateでデータを管理し、ボタンで商品を追加できるテーブル
+// まずAPIのデータ構造をconsole.logで確認する練習
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  stock: number;
-}
+const ApiStructureCheck = () => {
+  const [users, setUsers] = useState([]);
 
-
-const StatefulTable = () => {
-
-  
-  const [products, setProducts] = useState<Product[]>([
-    { id: 1, name: "iPhone", price: 100000, stock: 5 }
-  ]);
-
-  const addProduct = () => {
-    const newProduct: Product = {
-      id: products.length + 1,
-      name: "新商品",
-      price: 50000,
-      stock: 1
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const data = await response.json();
+        
+        // 🔍 重要: まずデータ構造を確認！
+        console.log('取得したデータ全体:', data);
+        console.log('最初のユーザー:', data[0]);
+        console.log('利用可能なプロパティ:', Object.keys(data[0]));
+        
+        setUsers(data);
+      } catch (error) {
+        console.error('エラー:', error);
+      }
     };
-    // ここにコードを書いてください
-    // setProducts を使って新しい商品を追加
-    setProducts(
-      [...products, newProduct]
-    );
-  };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div>
-      <h3>動的テーブル</h3>
-      <button onClick={addProduct}>商品追加</button>
-      
-      <table style={{ border: '1px solid #ccc', borderCollapse: 'collapse', width: '100%', marginTop: '10px' }}>
+      <h3>API構造確認</h3>
+      <p>ブラウザのコンソール（F12）を開いて、データ構造を確認してください</p>
+      <p>取得したユーザー数: {users.length}</p>
+      {/* console.logで確認後、テーブルを作成してください */}
+      <table>
         <thead>
-          <tr style={{ backgroundColor: '#f5f5f5' }}>
-            <th style={{ border: '1px solid #ccc', padding: '8px' }}>ID</th>
-            <th style={{ border: '1px solid #ccc', padding: '8px' }}>商品名</th>
-            <th style={{ border: '1px solid #ccc', padding: '8px' }}>価格</th>
-            <th style={{ border: '1px solid #ccc', padding: '8px' }}>在庫数</th>
-          </tr>
+            <tr>
+              <th>
+                Name
+              </th>
+              <th>
+                Email
+              </th>
+            </tr>
         </thead>
         <tbody>
-          {/* ここにproductsをmapでレンダリング */}
-          {products.map(product=>(
-            <tr 
-            key={product.id}
-            >
-              <td>{product.id}</td>
-              <td>{product.name}</td>
-              <td>{product.price}</td>
-              <td>{product.stock}</td>
+        {users.map(user=>(
+            <tr key={user.id}>
+              <td>
+                {user.name}
+              </td>
+              <td>
+                {user.email}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -68,4 +64,4 @@ const StatefulTable = () => {
   );
 };
 
-export default StatefulTable;
+export default ApiStructureCheck;
