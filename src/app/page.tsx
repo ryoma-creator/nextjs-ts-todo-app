@@ -1,42 +1,46 @@
-// ==============================================
-// 問題4: setInterval の基本 🎲
-// ==============================================
-// ボタンを押すと1秒ごとに数字が増えるカウンターを作成してください。
-// 🎯 期待する動作: "Start" ボタン → 1秒ごとに数字が増加
-// ⚠️ まだstop機能は不要です
-"use client"
-import { useState } from "react";
-const BasicInterval = () => {
-  const[count, setCount] = useState(0);
-  const[timerId, setTimerId] = useState(null);
-  // ここにコードを書いてください
-  // ヒント: setIntervalを使います
+'use client'
 
-  const handleClick = () => {
-  const id = setInterval(()=>{
-      setCount((prev)=>{return prev+1});
-  },1000);
-  setTimerId(id);
-  }
-  const handleStopClick = () => {
-   clearInterval(timerId);
-   setTimerId(null); 
-  }
+// React HTMLテーブル要素 段階的練習問題
+// IBM面接対策：table, thead, tbody, tr, th, td を使ったデータ表示をマスター
+// APIデータ取得 + テーブル表示の完全習得！
 
+// ==============================================
+// 問題1: 基本的なHTMLテーブル構造
+// ==============================================
+// 静的データを使って基本的なテーブルを作成してください
+// 必須要素: table, thead, tbody, tr, th, td
+
+import React from 'react';
+
+const BasicTable = () => {
   return (
     <div>
-      <p>Count: {/* カウンター表示 */}</p>
-      <button
-        className="bg-amber-300 px-4 py-2"
-        onClick={handleClick}
-      >Start Counting</button>
-      {count}
-      <button
-        className="bg-red-600 px-4 py-2"
-        onClick={handleStopClick}
-      >stop button</button>
+      <h3>基本テーブル</h3>
+      {/* ここにテーブルのHTMLを書いてください */}
+      <table>
+        <thead>
+          <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                tell
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+                Ryoma
+            </td>
+            <td>
+                777
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default BasicInterval;
+export default BasicTable;
