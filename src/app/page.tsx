@@ -1,46 +1,71 @@
 'use client'
 
-// React HTMLテーブル要素 段階的練習問題
-// IBM面接対策：table, thead, tbody, tr, th, td を使ったデータ表示をマスター
-// APIデータ取得 + テーブル表示の完全習得！
-
 // ==============================================
-// 問題1: 基本的なHTMLテーブル構造
+// 問題3: useStateとテーブルの組み合わせ
 // ==============================================
-// 静的データを使って基本的なテーブルを作成してください
-// 必須要素: table, thead, tbody, tr, th, td
+// useStateでデータを管理し、ボタンで商品を追加できるテーブル
 
-import React from 'react';
+import React, { useState } from 'react';
 
-const BasicTable = () => {
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+}
+
+
+const StatefulTable = () => {
+
+  
+  const [products, setProducts] = useState<Product[]>([
+    { id: 1, name: "iPhone", price: 100000, stock: 5 }
+  ]);
+
+  const addProduct = () => {
+    const newProduct: Product = {
+      id: products.length + 1,
+      name: "新商品",
+      price: 50000,
+      stock: 1
+    };
+    // ここにコードを書いてください
+    // setProducts を使って新しい商品を追加
+    setProducts(
+      [...products, newProduct]
+    );
+  };
+
   return (
     <div>
-      <h3>基本テーブル</h3>
-      {/* ここにテーブルのHTMLを書いてください */}
-      <table>
+      <h3>動的テーブル</h3>
+      <button onClick={addProduct}>商品追加</button>
+      
+      <table style={{ border: '1px solid #ccc', borderCollapse: 'collapse', width: '100%', marginTop: '10px' }}>
         <thead>
-          <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                tell
-            </th>
+          <tr style={{ backgroundColor: '#f5f5f5' }}>
+            <th style={{ border: '1px solid #ccc', padding: '8px' }}>ID</th>
+            <th style={{ border: '1px solid #ccc', padding: '8px' }}>商品名</th>
+            <th style={{ border: '1px solid #ccc', padding: '8px' }}>価格</th>
+            <th style={{ border: '1px solid #ccc', padding: '8px' }}>在庫数</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-                Ryoma
-            </td>
-            <td>
-                777
-            </td>
-          </tr>
+          {/* ここにproductsをmapでレンダリング */}
+          {products.map(product=>(
+            <tr 
+            key={product.id}
+            >
+              <td>{product.id}</td>
+              <td>{product.name}</td>
+              <td>{product.price}</td>
+              <td>{product.stock}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
 };
 
-export default BasicTable;
+export default StatefulTable;
