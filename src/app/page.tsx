@@ -1,30 +1,56 @@
 'use client'
-
 // ==============================================
-// 問題4: API構造確認練習
+// 問題5: 実際のAPI + テーブル表示
 // ==============================================
-// まずAPIのデータ構造をconsole.logで確認する練習
+// API構造を理解した後、テーブルで表示
+import { useState, useEffect } from "react";
 
-import React, { useState, useEffect } from 'react';
+interface ApiUser {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  website: string;
+}
 
-const ApiStructureCheck = () => {
-  const [users, setUsers] = useState([]);
+const ApiUserTable = () => {
+  // スタイル定義（方法1）
+  const tableStyle = {
+    borderCollapse: 'collapse',
+    width: '100%'
+  };
+  
+  const cellStyle = {
+    border: '1px solid #ccc',
+    padding: '10px'
+  };
+  
+  const headerStyle = {
+    ...cellStyle,
+    backgroundColor: '#f0fff0',
+    fontWeight: 'bold'
+  };
+
+  const [users, setUsers] = useState<ApiUser[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
+      // ここにコードを書いてください
+      // 1. setLoading(true)
+      // 2. fetch('https://jsonplaceholder.typicode.com/users')
+      // 3. console.log でデータ確認
+      // 4. setUsers でデータ設定
+      // 5. setLoading(false)
+      setLoading(true);
+      
         const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        const data = await response.json();
-        
-        // 🔍 重要: まずデータ構造を確認！
-        console.log('取得したデータ全体:', data);
-        console.log('最初のユーザー:', data[0]);
-        console.log('利用可能なプロパティ:', Object.keys(data[0]));
-        
+        const data  = await response.json();
+        console.log(data);
         setUsers(data);
-      } catch (error) {
-        console.error('エラー:', error);
-      }
+
+      setLoading(false);
+    
     };
 
     fetchUsers();
@@ -32,36 +58,37 @@ const ApiStructureCheck = () => {
 
   return (
     <div>
-      <h3>API構造確認</h3>
-      <p>ブラウザのコンソール（F12）を開いて、データ構造を確認してください</p>
-      <p>取得したユーザー数: {users.length}</p>
-      {/* console.logで確認後、テーブルを作成してください */}
-      <table>
-        <thead>
+      <h3>API ユーザーテーブル</h3>
+      {loading ? (
+        <p>読み込み中...</p>
+      ) : (
+        <table style={tableStyle}>
+          <thead>
             <tr>
-              <th>
-                Name
-              </th>
-              <th>
-                Email
-              </th>
+              <th style={headerStyle}>ID</th>
+              <th style={headerStyle}>名前</th>
+              <th style={headerStyle}>メール</th>
+              <th style={headerStyle}>電話</th>
+              <th style={headerStyle}>ウェブサイト</th>
             </tr>
-        </thead>
-        <tbody>
-        {users.map(user=>(
-            <tr key={user.id}>
-              <td>
-                {user.name}
-              </td>
-              <td>
-                {user.email}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {/* ここにusersデータをmap()でレンダリング */}
+            {/* 重要: key={user.id} を忘れずに！ */}
+            {users.map(user=>(
+              <tr key={user.id}>
+                <td style={cellStyle}>{user.id}</td>
+                <td style={cellStyle}>{user.name}</td>
+                <td style={cellStyle}>{user.email}</td>
+                <td style={cellStyle}>{user.phone}</td>
+                <td style={cellStyle}>{user.website}</td>               
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
 
-export default ApiStructureCheck;
+export default ApiUserTable;
