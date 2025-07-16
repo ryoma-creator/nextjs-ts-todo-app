@@ -1,51 +1,96 @@
-// 検索機能 基礎練習問題
-// IBM面接対策：filter, includes, toLowerCase の完全習得
-// useStateとfilterを使った検索の基本パターン
-
 'use client'
 import React, { useState } from 'react';
 
 // ==============================================
-// 問題1: 基本的な配列検索
+// 1. To-Do List（IBM面接の定番）
 // ==============================================
-// 目標: 静的データの検索機能をマスター
-// やること: useState + filter + includes
+const TodoList = () => {
+  const [todos, setTodos] = useState([
+    { id: 1, text: 'React学習', completed: false },
+    { id: 2, text: '面接準備', completed: true }
+  ]);
+  const [inputText, setInputText] = useState('');
 
-const BasicArraySearch = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  
-  const fruits = [
-    'apple', 'banana', 'orange', 'grape', 'strawberry', 
-    'pineapple', 'mango', 'kiwi'
-  ];
+  // 新しいToDo追加
+  const addTodo = () => {
+    if (inputText.trim()) {
+      setTodos([...todos, {
+        id: todos.length + 1,
+        text: inputText,
+        completed: false
+      }]);
+      setInputText('');
+    }
+  };
 
-  // 検索フィルタリング
-  const filteredFruits = fruits.filter(fruit =>
-    fruit.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // 完了状態の切り替え
+  const toggleTodo = (id) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  // 削除
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
 
   return (
-    <div style={{ padding: '20px', border: '2px solid black', margin: '10px' }}>
-      <h3>問題1: 基本配列検索</h3>
+    <div style={{ padding: '20px', border: '2px solid blue', margin: '10px' }}>
+      <h3>📝 To-Do List</h3>
       
-      <input
-        type="text"
-        placeholder="フルーツを検索..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ padding: '8px', width: '200px', marginBottom: '10px' }}
-      />
-      
-      <p>検索結果: {filteredFruits.length}件</p>
-      
-      <ul>
-        {filteredFruits.map((fruit, index) => (
-          <li key={index}>{fruit}</li>
+      {/* 入力エリア */}
+      <div style={{ marginBottom: '15px' }}>
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="新しいタスクを入力..."
+          style={{ padding: '8px', width: '200px', marginRight: '10px' }}
+        />
+        <button onClick={addTodo} style={{ padding: '8px 15px' }}>
+          追加
+        </button>
+      </div>
+
+      {/* ToDoリスト表示 */}
+      <div>
+        {todos.map(todo => (
+          <div key={todo.id} style={{
+            padding: '10px',
+            margin: '5px 0',
+            border: '1px solid #ccc',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: todo.completed ? '#f0f0f0' : 'white'
+          }}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodo(todo.id)}
+              style={{ marginRight: '10px' }}
+            />
+            <span style={{
+              textDecoration: todo.completed ? 'line-through' : 'none',
+              flex: 1
+            }}>
+              {todo.text}
+            </span>
+            <button
+              onClick={() => deleteTodo(todo.id)}
+              style={{ padding: '5px 10px', backgroundColor: '#ff6b6b', color: 'white' }}
+            >
+              削除
+            </button>
+          </div>
         ))}
-      </ul>
+      </div>
+      
+      <p style={{ color: 'gray', fontSize: '12px' }}>
+        完了: {todos.filter(t => t.completed).length} / 全体: {todos.length}
+      </p>
     </div>
   );
 };
 
-export default BasicArraySearch;
-
+export default TodoList;
