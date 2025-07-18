@@ -16,6 +16,10 @@ const todolist = () => {
     setUserInput("");
   }
 
+  const deleteTodo=(id)=>{
+    setTodos(todos.filter(todo=>id !== todo.id));
+  }
+
   return(
   <>
     <div>
@@ -33,6 +37,18 @@ const todolist = () => {
         add
       </button>
      </div>
+    </div>
+    <div>
+      {todos.map(
+        (todo)=>(
+          <div key={todo.id}>
+            <div>{todo.task}</div>
+            <button
+              onClick={()=>deleteTodo(todo.id)}
+            >delete button</button>
+          </div>
+        )
+      )}
     </div>
   </>);
 }; 
