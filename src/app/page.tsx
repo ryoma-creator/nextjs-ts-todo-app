@@ -1,119 +1,119 @@
-'use client'
+"use client"
+import { useState, useEffect } from "react";
 
-import { useState } from "react";
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
 
-// 2. Simple Form with Validation
-const SimpleForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    age: ''
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+// APIから取得する生データの型
+interface ApiUser {
+  id: number;
+  name: string;
+  email: string;
+  address: {
+    city: string;
+  };
+  company: {
+    name: string;
+  };
+}
 
-  const validateForm = () => {
-    const newErrors = {};
+const UserList = () => {
+  // State定義
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // 🍎 果物屋さんがAPIから果物を仕入れる感じ
+  const fetchUsers = async (): Promise<void> => {
+    setLoading(true);
     
-    if (!formData.name.trim()) {
-      newErrors.name = '名前は必須です';
+    try {
+      // APIから生データを取得
+      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const rawData: ApiUser[] = await response.json();
+      
+      // 🔄 仕入れた果物を店頭用に整理する
+      const processedUsers: User[] = rawData.map((apiUser: ApiUser) => ({
+        id: apiUser.id,
+        name: apiUser.name,
+        email: apiUser.email
+      }));
+      
+      setUsers(processedUsers);  // 🛒 果物をかごに入れる
+    } catch (error) {
+      console.error('データ取得エラー:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'メールアドレスは必須です';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = '有効なメールアドレスを入力してください';
-    }
-    
-    if (!formData.age.trim()) {
-      newErrors.age = '年齢は必須です';
-    } else if (isNaN(formData.age) || formData.age < 1 || formData.age > 150) {
-      newErrors.age = '有効な年齢を入力してください';
-    }
-    
-    return newErrors;
   };
 
-  const handleSubmit = () => {
-    const newErrors = validateForm();
-    setErrors(newErrors);
-    
-    if (Object.keys(newErrors).length === 0) {
-      setIsSubmitted(true);
-      setTimeout(() => setIsSubmitted(false), 3000);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
+  // 🏠 コンポーネントが家に引っ越してきた時にデータを取得
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
-    <div className="p-4 border rounded-lg bg-white shadow-sm">
-      <h2 className="text-xl font-bold mb-4">Simple Form with Validation</h2>
-      {isSubmitted && (
-        <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">
-          フォームが正常に送信されました！
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">ユーザーリスト (TypeScript)</h1>
+      
+      <button 
+        onClick={fetchUsers}
+        disabled={loading}
+        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+      >
+        {loading ? "読み込み中..." : "データ更新"}
+      </button>
+
+      {loading ? (
+        <p>データを読み込み中...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 🍎 果物リスト（左側） */}
+          <div>
+            <h2 className="text-lg font-semibold mb-2">ユーザー一覧</h2>
+            <div className="space-y-2">
+              {users.map(user => (
+                <button 
+                  key={user.id}
+                  onClick={() => setSelectedUser(user)}  // 🤏 果物を手に取る
+                  className="w-full text-left p-3 border rounded hover:bg-gray-50"
+                >
+                  {user.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 🔍 選択された果物の詳細（右側） */}
+          <div>
+            <h2 className="text-lg font-semibold mb-2">ユーザー詳細</h2>
+            {selectedUser ? (
+              <div className="p-4 bg-gray-50 rounded">
+                <h3 className="font-bold text-xl">{selectedUser.name}</h3>
+                <p className="text-gray-600">ID: {selectedUser.id}</p>
+                <p className="text-gray-600">Email: {selectedUser.email}</p>
+                <button 
+                  onClick={() => setSelectedUser(null)}  // 🗑️ 手を空にする
+                  className="mt-2 px-3 py-1 bg-red-500 text-white rounded text-sm"
+                >
+                  選択解除
+                </button>
+              </div>
+            ) : (
+              <p className="text-gray-500">ユーザーを選択してください</p>
+            )}
+          </div>
         </div>
       )}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">名前</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.name ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-1">メールアドレス</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-1">年齢</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.age ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age}</p>}
-        </div>
-        
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          送信
-        </button>
+
+      <div className="mt-4 text-sm text-gray-500">
+        総ユーザー数: {users.length}人
       </div>
     </div>
   );
 };
 
-
-export default SimpleForm;
+export default UserList;
