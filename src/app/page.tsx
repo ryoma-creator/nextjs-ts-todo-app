@@ -1,83 +1,81 @@
 'use client'
 
-import { useState } from "react"
+import React, { useEffect, useState } from 'react'
 
-interface UserData {
+interface User {
+  id: number;
   name: string;
   email: string;
-  password: string;
 }
 
-interface FormErrors {
-  name?: string;
-  email?: string;
-  password?: string;
-}
+const page = () => {
+  const headers = ["ID", "Name", "Email"];
 
-
-const todolist = () => {
-
-// 問題7: 文字数チェック（length使用）
-// 入力例: "abc", 2 → true, "a", 2 → false
-function isMinLength(str: string, minLength: number): boolean {
-  // lengthを使って最小文字数をチェック
-  return str.length === minLength;
-}
-
-// テスト
-console.log(isMinLength("abc", 2)); // true
-console.log(isMinLength("a", 2));   // false
-
-
-
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const[userInput, setUserInput]=useState<string>("");
-
-  const addTodo=()=>{
-    const newTodo = {
-      id: Date.now(),
-      task: userInput,
-      completed: false,
+  const [data, setData] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>("");
+  
+  const fetchData = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/users'); // 実際のAPI
+      const data:User = await response.json();
+      console.log(data);
+      setData(data.slice(0,5));
+    } catch(error) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
     }
-    setTodos([...todos, newTodo]);
-    setUserInput("");
   }
 
-  const deleteTodo=(id :number)=>{
-    setTodos(todos.filter(todo=>id !== todo.id));
+  useEffect(() => {
+    setTimeout(()=>{
+      fetchData();
+    }, 2000);
+
+  }, []); // 依存配列追加
+
+  const filteredData = () => {
+    return data.filter((user) => 
+      user.name.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase()) ||
+      user.email.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase())
+    );
   }
 
-  return(
-  <>
+if (loading) {
+  return <div>now loading...</div>;
+}
+
+  return (
     <div>
-     <h1>TODOLIST</h1>
-     <div>
-      <input
-       type="text"
-       value={userInput}
-       placeholder="add your task here"
-       onChange={(e)=>setUserInput(e.target.value)}
+      <h1>data fetch table</h1>
+      <label htmlFor="" ></label>
+      <input 
+        type="text"
+        value={searchInput} 
+        onChange={(e)=>setSearchInput(e.target.value)}
+        placeholder="name or email please type to search for..."
       />
-      <button
-        onClick={addTodo}
-      >
-        add
-      </button>
-     </div>
+      <table>
+        <thead>
+            <tr>
+              {headers.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
+            </tr>
+        </thead>
+        <tbody>
+          {filteredData().map(user => (
+            <tr key={user.id}>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-    <div>
-      {todos.map(
-        (todo)=>(
-          <div key={todo.id}>
-            <div>{todo.task}</div>
-            <button
-              onClick={()=>deleteTodo(todo.id)}
-            >delete button</button>
-          </div>
-        )
-      )}
-    </div>
-  </>);
-}; 
+  );
+}
 
-export default todolist;
+export default page
