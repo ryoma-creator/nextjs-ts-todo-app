@@ -2,9 +2,51 @@
 
 import { useState } from "react"
 
+interface UserData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
+
 const todolist = () => {
-  const [todos, setTodos] = useState([]);
-  const[userInput, setUserInput]=useState("");
+
+  function validateUserForm(userData: UserData): FormErrors {
+    // userData = { name: "  田中  ", email: "  test@  ", password: "  123  " }
+    // 戻り値: { name?: string, email?: string, password?: string }
+    
+    const errors: FormErrors = {};
+    if(userData.name.trim().length < 2){
+      errors.name = "名前は2文字以上で入力してください";
+    }
+    
+    if(!userData.email.trim().includes("@")){
+      errors.email = "メールアドレスに@が必要です";
+    }
+    
+    if(userData.password.trim().length < 6) {
+      errors.password = "パスワードは6文字以上で入力してください";
+    }
+    
+    return errors;
+  }
+  // テスト
+  const result = validateUserForm({
+    name: "  田中  ",
+    email: "  test@gmail.com  ", 
+    password: "  123  "
+  });
+  console.log(result);
+
+
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const[userInput, setUserInput]=useState<string>("");
 
   const addTodo=()=>{
     const newTodo = {
@@ -16,7 +58,7 @@ const todolist = () => {
     setUserInput("");
   }
 
-  const deleteTodo=(id)=>{
+  const deleteTodo=(id :number)=>{
     setTodos(todos.filter(todo=>id !== todo.id));
   }
 
