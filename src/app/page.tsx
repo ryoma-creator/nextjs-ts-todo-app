@@ -17,32 +17,17 @@ interface FormErrors {
 
 const todolist = () => {
 
-  function validateUserForm(userData: UserData): FormErrors {
-    // userData = { name: "  田中  ", email: "  test@  ", password: "  123  " }
-    // 戻り値: { name?: string, email?: string, password?: string }
-    
-    const errors: FormErrors = {};
-    if(userData.name.trim().length < 2){
-      errors.name = "名前は2文字以上で入力してください";
-    }
-    
-    if(!userData.email.trim().includes("@")){
-      errors.email = "メールアドレスに@が必要です";
-    }
-    
-    if(userData.password.trim().length < 6) {
-      errors.password = "パスワードは6文字以上で入力してください";
-    }
-    
-    return errors;
-  }
-  // テスト
-  const result = validateUserForm({
-    name: "  田中  ",
-    email: "  test@gmail.com  ", 
-    password: "  123  "
-  });
-  console.log(result);
+// 問題7: 文字数チェック（length使用）
+// 入力例: "abc", 2 → true, "a", 2 → false
+function isMinLength(str: string, minLength: number): boolean {
+  // lengthを使って最小文字数をチェック
+  return str.length === minLength;
+}
+
+// テスト
+console.log(isMinLength("abc", 2)); // true
+console.log(isMinLength("a", 2));   // false
+
 
 
   const [todos, setTodos] = useState<Todo[]>([]);
