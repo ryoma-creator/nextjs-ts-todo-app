@@ -1,42 +1,52 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import React, { useEffect, useState } from 'react'
 
-import React from 'react'
-
-interface User {
-  name: string;
-  id: number;
-  email: string;
-}
-
-const userSystem = () => {
-
+const DataFetchApp = () => {
   const containerStyle = {
-    padding: '20px',
-    margin: '0, auto',
-    maxWidth: '800px'
+    width: "800px",
+    margin: "0 auto",
+    padding: "20px"
   }
-  
+  const tableStyle = {
+    borderCollapse: "collapse",
+    backgroundColor: 'white',
+    width: "100%"
+  }
 
-  const header = ["Name", "Email"];
+  const cellStyle = {
+    border: '1px solid black',
+    padding: "10px"
+  }
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<User[]>([]);
-  const [error, setError] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const flexStyle = {
+    display: 'flex',
+    gap: "10px",
+    marginBottom: '20px',
+    alignItems: "center"
+  }
+
+  const headers = ["Name", "Email"];
+
+  const[userData, setUserData] = useState([]);
+  const[loading, setLoading] = useState(false);
+  const[userInput, setUserInput] = useState("");
   
-  const fetchData = async() => {
+  const dataFetch = async() => {
     setLoading(true);
     try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/users");
-      const data= await response.json();
+      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const data = await response.json();
       console.log(data);
-      setUserData(data);
+      const fetchData = data.slice(0, 5).map(user => ({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      }))
+      setUserData(fetchData);
     }
-    catch(error){
-      setError(error);
-      console.log(error);
+    catch (error){
+      console.log(error.message);
     }
     finally{
       setLoading(false);
@@ -44,55 +54,49 @@ const userSystem = () => {
   }
 
   useEffect(()=>{
-    fetchData();
-  },[]); 
+      dataFetch();
+    }, []);
 
-  const filteredData = userData.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  ); 
+  const searchData = userData.filter((user)=>{
+    return　user.name.toLowerCase().includes(userInput.toLowerCase());
+    });
+  
 
-if(loading) {
-  return <p>now loading...</p>
-}
+  if (loading) {
+    return(
+    <div>...loading</div>
+    );
+  }
 
-if(error) {
-  return <p>error is happening</p>
-}
-return (
-  <div style={containerStyle}>
-    <h1>user system</h1>
-    <input
-      type="text"
-      value={searchTerm}
-      onChange={(e)=>setSearchTerm(e.target.value)}
-      placeholder="search users"
-    />
-    <table>
-      <thead>
-        <tr>
-          {header.map((title,index)=>
-              <th key={index}> 
-                {title}
+  return (
+    <div style={containerStyle}>
+      <h1>DataFetchApp</h1>
+      <input 
+        type="text" 
+        value={userInput}
+        onChange={(e)=>setUserInput(e.target.value)}
+      />
+      <table style={tableStyle}>
+        <thead>
+          <tr>
+            {headers.map((header,index)=>(
+              <th key={index}>
+                {header}
               </th>
-            )}
-        </tr>
-      </thead>
-      <tbody>
-           {filteredData.map((data)=>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {searchData.map((data)=>(
             <tr key={data.id}>
               <td>{data.name}</td>
               <td>{data.email}</td>
             </tr>
-          )}
-      </tbody>
-    </table>
-  </div>
-);
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+};
 
-
-}
-
-
-
-export default userSystem;
+export default DataFetchApp;
