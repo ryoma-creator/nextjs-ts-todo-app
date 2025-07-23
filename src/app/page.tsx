@@ -1,49 +1,52 @@
 'use client'
 
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState } from "react"
+import React from 'react'
 
-const FormValidation = () => {
+interface FormData {
+  name: string;
+  email: string;
+}
 
-  const [formData, setFormData] = useState({
+const FormApp: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
-    message: ""
   });
 
-  const handleChange = (e) => {
-    const [name, value] = e.target;
-    setFormData({...formData, [name]: value});
-  };
-
-
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} =  e.target;
+    setFormData(prev=>({...prev, [name]: value}));
+    console.log(formData);
+  }
 
   return (
     <div>
-      <h1>お問い合わせフォーム</h1>
-      <form>
-        <input
-          type="text"
+      <h1>Form App</h1>
+      <div>
+        <label>Name</label>
+        <input 
+          type="text" 
+          placeholder="enter your name"
+          name="name"
           value={formData.name}
-          name='name'
           onChange={handleChange}
         />
-        <input
-          type="email"
+        <label>Email</label>
+        <input 
+          type="email" 
+          placeholder="enter your email"
+          name="email"
           value={formData.email}
-          name='email'
           onChange={handleChange}
-        />
-        <input
-          type="text"
-          value={formData.message}
-          name='message'
-          onChange={handleChange}
-        />
-      </form>
-
+        />        
+      </div>
+      <div>
+        <p>Name: {formData.name}</p>
+        <p>Email: {formData.email}</p>
+      </div>
     </div>
   )
 }
 
-export default FormValidation;
+export default FormApp
