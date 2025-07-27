@@ -13,10 +13,14 @@ const Todo = () => {
       id: crypto.randomUUID(),
       text: userInput,
     }
-    setTodos([
-      ...todos, newTodo
+    setTodos(prev => [
+      ...prev, newTodo
     ]);
     setUserInput('');
+  }
+
+  const deleteTodo = (id: number) => {
+    setTodos(prev => prev.filter(todo => todo.id !== id));
   }
 
   return (
@@ -43,7 +47,8 @@ const Todo = () => {
       <ul>
          {todos.map(todo=>(
           <li key={todo.id}>
-            {todo.text}
+            <p>{todo.text}</p>
+            <button onClick={()=>deleteTodo(todo.id)}>Delete</button>
           </li>
          ))}
       </ul>
