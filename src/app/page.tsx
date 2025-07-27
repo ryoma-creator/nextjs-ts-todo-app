@@ -3,11 +3,17 @@
 import React from 'react'
 import { useState } from 'react'
 
-const Todo = () => {
-  const [userInput, setUserInput] = useState('');
-  const [todos, setTodos] = useState([])
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
 
-  const addTodo = () => {
+const Todo:React.FC = () => {
+  const [userInput, setUserInput] = useState<string>('');
+  const [Todos, setTodos] = useState<Todo[]>([])
+
+  const addTodo = ():void => {
     if(!userInput.trim()) return;
     const newTodo = {
       id: crypto.randomUUID(),
@@ -20,15 +26,15 @@ const Todo = () => {
     setUserInput('');
   }
 
-  const deleteTodo = (id: number) => {
-    setTodos(prev => prev.filter(todo => todo.id !== id));
+  const deleteTodo = (id: Todo['id']) => {
+    setTodos(prev => prev.filter(Todo => Todo.id !== id));
   }
 
-  const completeTodo = (id: number) => {
-    setTodos(prev => prev.map(todo => 
-      todo.id === id
-        ? { ...todo, completed: !todo.completed }
-        : todo
+  const completeTodo = (id: Todo['id']):void => {
+    setTodos(prev => prev.map(Todo => 
+      Todo.id === id
+        ? { ...Todo, completed: !Todo.completed }
+        : Todo
     ))
   }
   return (
@@ -42,7 +48,7 @@ const Todo = () => {
          onChange={(e)=>(setUserInput(e.target.value))}
          onKeyDown={(e)=>{
           if(e.key === 'Enter'){
-            addTodo
+            addTodo()
           }
          }}
         />
@@ -53,15 +59,15 @@ const Todo = () => {
         </button>
       </div>
       <ul>
-         {todos.map(todo=>(
-          <li key={todo.id}
+         {Todos.map(Todo=>(
+          <li key={Todo.id}
           style={{display: 'flex', justifyContent: 'space-between',}}
           >
-            <p>{todo.text}</p>
+            <p>{Todo.text}</p>
             <div style={{display: 'flex', gap: '10px'}}>
-              <button onClick={()=>deleteTodo(todo.id)}>Delete</button>
+              <button onClick={()=>deleteTodo(Todo.id)}>Delete</button>
               <button
-                onClick={()=>completeTodo(todo.id)}>{todo.completed ? 'Completed✅' : 'Incomplete❌' }
+                onClick={()=>completeTodo(Todo.id)}>{Todo.completed ? 'Completed✅' : 'Incomplete❌' }
               </button>
             </div>
           </li>
