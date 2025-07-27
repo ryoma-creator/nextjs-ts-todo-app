@@ -12,6 +12,7 @@ const Todo = () => {
     const newTodo = {
       id: crypto.randomUUID(),
       text: userInput,
+      completed: false,
     }
     setTodos(prev => [
       ...prev, newTodo
@@ -23,6 +24,13 @@ const Todo = () => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
   }
 
+  const completeTodo = (id: number) => {
+    setTodos(prev => prev.map(todo => 
+      todo.id === id
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    ))
+  }
   return (
     <div style={{padding: '20px', maxWidth: '1000px', margin: '0 auto'}}>
       <div><h1>TO DO LIST</h1></div>
@@ -46,9 +54,16 @@ const Todo = () => {
       </div>
       <ul>
          {todos.map(todo=>(
-          <li key={todo.id}>
+          <li key={todo.id}
+          style={{display: 'flex', justifyContent: 'space-between',}}
+          >
             <p>{todo.text}</p>
-            <button onClick={()=>deleteTodo(todo.id)}>Delete</button>
+            <div style={{display: 'flex', gap: '10px'}}>
+              <button onClick={()=>deleteTodo(todo.id)}>Delete</button>
+              <button
+                onClick={()=>completeTodo(todo.id)}>{todo.completed ? 'Completed✅' : 'Incomplete❌' }
+              </button>
+            </div>
           </li>
          ))}
       </ul>
