@@ -1,80 +1,78 @@
 'use client'
 
 import React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-interface Todo {
-  id: string;
-  text: string;
-  completed: boolean;
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  address:{
+    city: string;
+  };
 }
 
-const Todo:React.FC = () => {
-  const [userInput, setUserInput] = useState<string>('');
-  const [Todos, setTodos] = useState<Todo[]>([])
+const DataFetch = () => {
+  const headers = ['name', 'email', 'id'];
 
-  const addTodo = ():void => {
-    if(!userInput.trim()) return;
-    const newTodo = {
-      id: crypto.randomUUID(),
-      text: userInput,
-      completed: false,
+  const[loading, setLoading] = useState<boolean>(false);
+  const[data, setData] = useState<User[]>([]);
+  
+  const fetchData = async(): Promise<void> => {
+    setLoading(true);
+  
+    try{
+      const response = await fetch('/api/users')
+      const userData: User[] = await response.json();
+      console.log(userData);
+      setData(userData);
     }
-    setTodos(prev => [
-      ...prev, newTodo
-    ]);
-    setUserInput('');
-  }
+    catch(error: any){
+      console.log(error.message)
+    }  
+    finally{
+      setLoading(false);
+    }
+  };
 
-  const deleteTodo = (id: Todo['id']) => {
-    setTodos(prev => prev.filter(Todo => Todo.id !== id));
-  }
+  useEffect(()=>{
+    fetchData();
+  },[]);
 
-  const completeTodo = (id: Todo['id']):void => {
-    setTodos(prev => prev.map(Todo => 
-      Todo.id === id
-        ? { ...Todo, completed: !Todo.completed }
-        : Todo
-    ))
-  }
+if(loading){
+  return <p>...loading</p>
+}
+
   return (
-    <div style={{padding: '20px', maxWidth: '1000px', margin: '0 auto'}}>
-      <div><h1>TO DO LIST</h1></div>
-      <div>
-        <input
-         style={{width: '800px'}}
-         type="text"
-         value={userInput}
-         onChange={(e)=>(setUserInput(e.target.value))}
-         onKeyDown={(e)=>{
-          if(e.key === 'Enter'){
-            addTodo()
-          }
-         }}
-        />
-        <button
-          onClick={addTodo}
-        >
-          add
-        </button>
-      </div>
-      <ul>
-         {Todos.map(Todo=>(
-          <li key={Todo.id}
-          style={{display: 'flex', justifyContent: 'space-between',}}
-          >
-            <p>{Todo.text}</p>
-            <div style={{display: 'flex', gap: '10px'}}>
-              <button onClick={()=>deleteTodo(Todo.id)}>Delete</button>
-              <button
-                onClick={()=>completeTodo(Todo.id)}>{Todo.completed ? 'Completed✅' : 'Incomplete❌' }
-              </button>
-            </div>
-          </li>
-         ))}
-      </ul>
+    <div style={{maxWidth:'800px', padding: '20px', margin: '0 auto'}}>
+      <table>
+        <thead>
+          <tr>
+            {headers.map((header:string, index:number)=>(
+              <th key={index} style={{padding: '10px'}}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((user:User)=>(
+            <tr key={user.id}>
+              <td style={{padding: '10px'}}>
+                {user.name}
+              </td>
+              <td style={{padding: '10px'}}>
+                {user.email}
+              </td>
+              <td style={{padding: '10px'}}>
+                {user.id}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
 
-export default Todo;
+export default DataFetch;
