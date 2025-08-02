@@ -1,78 +1,44 @@
 'use client'
+import { useState, useEffect } from "react";
 
-import React from 'react'
-import { useEffect, useState } from 'react'
+// 完成させてください（5分）
+const NumberList = () => {
+  const [numbers, setNumbers] = useState<number[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  address:{
-    city: string;
-  };
-}
-
-const DataFetch = () => {
-  const headers = ['name', 'email', 'id'];
-
-  const[loading, setLoading] = useState<boolean>(false);
-  const[data, setData] = useState<User[]>([]);
-  
-  const fetchData = async(): Promise<void> => {
+  const fetchNumbers = async () => {
     setLoading(true);
-  
-    try{
-      const response = await fetch('/api/users')
-      const userData: User[] = await response.json();
-      console.log(userData);
-      setData(userData);
-    }
-    catch(error: any){
-      console.log(error.message)
-    }  
-    finally{
+    // TODO: setTimeout を使って [1,2,3,4,5] をセット
+    // TODO: 1秒後にローディングを false に
+    setTimeout(()=>{
+      setNumbers([1, 2, 3, 4, 5]);
       setLoading(false);
-    }
+    }, 1000);
   };
 
-  useEffect(()=>{
-    fetchData();
-  },[]);
-
-if(loading){
-  return <p>...loading</p>
-}
+  useEffect(() => {
+    // TODO: fetchNumbers を呼ぶ
+    fetchNumbers();
+  }, []);
 
   return (
-    <div style={{maxWidth:'800px', padding: '20px', margin: '0 auto'}}>
-      <table>
-        <thead>
-          <tr>
-            {headers.map((header:string, index:number)=>(
-              <th key={index} style={{padding: '10px'}}>
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((user:User)=>(
-            <tr key={user.id}>
-              <td style={{padding: '10px'}}>
-                {user.name}
-              </td>
-              <td style={{padding: '10px'}}>
-                {user.email}
-              </td>
-              <td style={{padding: '10px'}}>
-                {user.id}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {/* TODO: numbers をマップして表示 */}
+          {numbers.map((number:number, index:number)=>{
+            return (
+            <div key={number}>
+              <div>{number}</div>
+            </div>
+            )
+          })}
+        </ul>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default DataFetch;
+export default NumberList;
