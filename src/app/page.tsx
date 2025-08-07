@@ -1,52 +1,44 @@
 'use client'
 
+import { useState } from "react"
+
 import React from 'react'
-import { useState, useEffect } from 'react';
 
-interface User {
-  id: number;
-  name: string;
-}
+const FormValidation = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    age: "",
+  });
 
-const DatafetchApp = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<User[]>([]);
+  const [errors, setErrors] = useState({})
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const dataFetch = async(): Promise<void> => {
-    setLoading(true);
-    try { 
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const data = await response.json();
-      console.log(data);
-      setData(data);
+  const handleSubmit = () => {
+    const newErrors = {};
+    
+    if(!formData.name.trim()){
+      newErrors.name = '名前が未入力です';
+    }
+
+    if(!formData.email.includes('@')){
+      newErrors.email = 'メールが無効です';
+    }
+
+    if(age < 0 || age > 100 || NaN(formData.age)){
+      newErrors.age = '年齢が無効です';
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      alert('成功');
     } 
-    catch (e){
-      console.log('エラー:', e);
-    }
-    finally{
-      setLoading(false);
-    }
+  };
 
-  }
-
-  useEffect(()=>{
-    dataFetch();
-  },[]);
   return (
-    <div>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <div>
-          {data.map((user:User) => (
-            <div key={user.id}>
-              <div>{user.name}</div>
-            </div>
-          ))}
-        </div> 
-      )}
-    </div>
+    <div>FormValidation</div>
   )
 }
 
-export default DatafetchApp
+export default FormValidation
