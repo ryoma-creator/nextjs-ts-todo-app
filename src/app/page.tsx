@@ -1,44 +1,52 @@
 'use client'
-import { useState, useEffect } from "react";
 
-// 完成させてください（5分）
-const NumberList = () => {
-  const [numbers, setNumbers] = useState<number[]>([]);
+import React from 'react'
+import { useState, useEffect } from 'react';
+
+interface User {
+  id: number;
+  name: string;
+}
+
+const DatafetchApp = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<User[]>([]);
 
-  const fetchNumbers = async () => {
+  const dataFetch = async(): Promise<void> => {
     setLoading(true);
-    // TODO: setTimeout を使って [1,2,3,4,5] をセット
-    // TODO: 1秒後にローディングを false に
-    setTimeout(()=>{
-      setNumbers([1, 2, 3, 4, 5]);
+    try { 
+      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const data = await response.json();
+      console.log(data);
+      setData(data);
+    } 
+    catch (e){
+      console.log('エラー:', e);
+    }
+    finally{
       setLoading(false);
-    }, 1000);
-  };
+    }
 
-  useEffect(() => {
-    // TODO: fetchNumbers を呼ぶ
-    fetchNumbers();
-  }, []);
+  }
 
+  useEffect(()=>{
+    dataFetch();
+  },[]);
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <div>Loading...</div>
       ) : (
-        <ul>
-          {/* TODO: numbers をマップして表示 */}
-          {numbers.map((number:number, index:number)=>{
-            return (
-            <div key={number}>
-              <div>{number}</div>
+        <div>
+          {data.map((user:User) => (
+            <div key={user.id}>
+              <div>{user.name}</div>
             </div>
-            )
-          })}
-        </ul>
+          ))}
+        </div> 
       )}
     </div>
-  );
-};
+  )
+}
 
-export default NumberList;
+export default DatafetchApp
